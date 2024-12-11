@@ -1,0 +1,29 @@
+name: Reproduce Error
+
+on:
+  workflow_dispatch:
+
+jobs:
+  example:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - name: Install project
+        run: uv sync
+
+      - name: Install DVC
+        run: sudo snap install --classic dvc
+        
+      - name: This works
+        run: uv run python example.py
+      
+      - name: This doesn't work
+        run: dvc repro
